@@ -1,0 +1,132 @@
+---
+title: "Interactive plots"
+author: "Jess"
+date: "2022-09-16"
+output: html_document
+---
+
+```{r Load Packages}
+library(tidyverse)
+library(ggiraph)
+library(ggthemes)
+library(cowplot)
+```
+
+```{r Load Data}
+setwd("~/OneDrive - Louisiana State University/MOSB Lab/Thesis/Analyses")
+library(readxl)
+EMA_DF <- read_excel("WorkingDataFrame.xlsx", sheet = "ambulatory")
+EMA_DFPlot <- subset(EMA_DFPlot, select = c("ID", "ObsNum", "SI", "Hopelessness_Raw", "TB_Raw", "PB_Raw"))
+```
+
+
+```{r, echo=FALSE}
+HopelessPlot02 <- ggplot(EMA_DFPlot, aes(x = ObsNum, y = Hopelessness_Raw)) +
+  geom_line(aes(color=ID), size = 0.6) + 
+  theme_light() +
+  xlab("Observation Number") +
+  theme(axis.title.y = element_blank(), legend.position = "none")
+  ggtitle("Hopelessness")
+
+  
+```
+
+```{r, echo=FALSE}
+HopelessPlot02 <- ggplot(EMA_DFPlot, aes(x = ObsNum, y = Hopelessness_Raw)) +
+  geom_line(aes(color=ID), size = 0.6) + 
+  theme_light() +
+  xlab("Observation Number") +
+  theme(axis.title.y = element_blank(), legend.position = "none")
+  ggtitle("Hopelessness")
+
+```
+
+
+```{r, echo=FALSE}
+SIPlot02 <- ggplot(EMA_DFPlot, aes(x = ObsNum, y = SI)) +
+  geom_line(aes(color=ID), size = 0.6) + 
+  theme_light() +
+  xlab("Observation Number") +
+  theme(axis.title.y = element_blank(), legend.position = "none") +
+  ggtitle("Suicidal Ideation")
+
+```
+
+```{r, echo=FALSE}
+IHTBPlot02 <- ggplot(EMA_DFPlot, aes(x = ObsNum, y = TB_Raw)) +
+  geom_line(aes(color=ID), size = 0.6) + 
+  theme_light() +
+  theme(axis.title.y = element_blank(), axis.title.x=element_blank(), legend.position = "none")
+  ggtitle("IH-TB")
+
+```
+
+```{r, echo=FALSE}
+IHPBPlot02 <- ggplot(EMA_DFPlot, aes(x = ObsNum, y = PB_Raw)) +
+  geom_line(aes(color=ID), size = 0.6) + 
+  theme_light() +
+  theme(axis.title.y = element_blank(), axis.title.x=element_blank(), legend.position = "none") +
+  ggtitle("IH-PB")
+
+```
+
+```{r, echo=FALSE}
+SI_gg <- SIPlot02 + geom_line_interactive(aes(tooltip = ID, data_id = ID), size = 0.6,color = "#b2b2b2")
+girafe(code = print(SI_gg))
+```
+
+```{r, echo=FALSE}
+x <- girafe(ggobj = SI_gg, width_svg = 8, height_svg = 6,
+           options = list( opts_hover_inv(css = "opacity:0.1;"),
+    opts_hover(css = "stroke-width:2;")
+  ))
+x
+```
+
+```{r, echo=FALSE}
+Ho_gg <- HopelessPlot02 + geom_line_interactive(aes(tooltip = ID, data_id = ID), size = 0.6, color = "#b2b2b2")
+#girafe(code = print(Ho_gg))
+
+x2 <- girafe(ggobj = Ho_gg, width_svg = 8, height_svg = 6,
+           options = list( opts_hover_inv(css = "opacity:0.1;"),
+    opts_hover(css = "stroke-width:2;")
+  ))
+
+```
+
+```{r, echo=FALSE}
+PB_gg <- IHPBPlot02 + geom_line_interactive(aes(tooltip = ID, data_id = ID), size = 0.6, color = "#b2b2b2")
+#girafe(code = print(Ho_gg))
+
+x3 <- girafe(ggobj = PB_gg, width_svg = 8, height_svg = 6,
+           options = list( opts_hover_inv(css = "opacity:0.1;"),
+    opts_hover(css = "stroke-width:2;")
+  ))
+
+```
+
+```{r, echo=FALSE}
+TB_gg <- IHTBPlot02 + geom_line_interactive(aes(tooltip = ID, data_id = ID), size = 0.6, color = "#b2b2b2")
+#girafe(code = print(Ho_gg))
+
+#x4 <- girafe(ggobj = TB_gg, width_svg = 8, height_svg = 6,
+#           options = list( opts_hover_inv(css = "opacity:0.1;"),
+#    opts_hover(css = "stroke-width:2;")
+#  ))
+
+```
+
+```{r, echo=FALSE}
+
+title_gg <- ggplot() + labs(subtitle = "Interactive Graph- Hover over lines to select participant", fontface = "italic")
+title_theme <- ggdraw() +
+  draw_label("Interactive Graph- Hover over line to select participant")
+```
+
+```{r}
+gg_combined <- girafe(ggobj = plot_grid(PB_gg, TB_gg, Ho_gg, SI_gg, title_gg, ncol = 2, rel_heights = c(1.3, 1.4, 0.12)), width_svg = 12, height_svg = 6,
+        options = list( opts_hover_inv(css = "opacity:0.02;"), opts_tooltip(use_fill = TRUE), opts_hover(css = "stroke:indigo"),css = "stroke-width:2;")) 
+
+gg_combined 
+```
+
