@@ -14,7 +14,7 @@ library(cowplot)
 ```
 
 ```{r Load Data, echo=FALSE, results='hide', warning=FALSE}
-setwd("~/OneDrive - Louisiana State University/MOSB Lab/Thesis/Analyses")
+#setwd("~/OneDrive - Louisiana State University/MOSB Lab/Thesis/Analyses")
 library(readxl)
 EMA_DF <- read_excel("WorkingDataFrame.xlsx", sheet = "ambulatory")
 EMA_DFPlot <- subset(EMA_DF, select = c("ID", "ObsNum", "SI", "Hopelessness_Raw", "TB_Raw", "PB_Raw"))
